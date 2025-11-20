@@ -37,10 +37,25 @@ An interactive Python application using OpenCV and MediaPipe for real-time hand 
 
 ---
 
+## Limitations
+- Requires good lighting for stable hand tracking
+- Not ideal on low-end webcams (tracking may lag)
+- No gesture recognition yet, only positional detection
+- Works best with a single hand at a time
+
+## Future Improvements
+- UI to customize node positions and sound files
+- Add gesture recognition (fist, open hand, swipe, etc.)
+- Add multi-hand support
+- Add visualizer animations linked to sound
+- Integrate background music or rhythm games
+- Build a mini game or interactive learning tool
+  
+##  Author
+- Wahab
+Passionate about computer vision, hardware, building interactive systems, and learning through projects.
 ## Installation
-
 ### 1. Clone the repository
-
 ```bash
 git clone https://github.com/000wahab000/Python-Passion-project.git
 cd Python-Passion-project
