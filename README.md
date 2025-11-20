@@ -59,3 +59,16 @@ Passionate about computer vision, hardware, building interactive systems, and le
 ```bash
 git clone https://github.com/000wahab000/Python-Passion-project.git
 cd Python-Passion-project
+```
+
+### 2. Install dependencies
+```bash
+pip install opencv-python mediapipe pygame
+```
+
+### 3. Run the project
+```bash
+python main.py
+```
+
+```
