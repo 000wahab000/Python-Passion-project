@@ -12,7 +12,9 @@ An interactive Python application using OpenCV and MediaPipe for real-time hand 
 - Visual feedback for active/inactive nodes  
 - Easy to extend with more nodes or custom logic  
 - Lightweight, runs on normal laptops  
-- can choose which node on hands to use (21-11-2025)
+- can choose which node on hands to use 
+(21-11-2025)
+- Added variety of effects to select for a more customizable experience (21-11-25)
 ---
 
 ## How It Works
