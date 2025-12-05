@@ -1,7 +1,7 @@
 # Python Passion Project – Hand Tracking Interaction System
 
 An interactive Python application using OpenCV and MediaPipe for real-time hand tracking. The system includes node-based collision detection, audio feedback through Pygame, and simple UI elements. Designed as part of a college mini-project to explore computer vision, event-driven behavior, and multimedia integration.
-
+This is a branch from the final project as the author is experiment with different way of how technology works the AR implementaion is in written in detail down ways 
 ---
 
 ## Features
@@ -70,5 +70,68 @@ pip install opencv-python mediapipe pygame
 ```bash
 python main.py
 ```
+## AR experiment
 
-```
+### Controls
+- q Quit program
+- m Mouse-V calibration (AR branch)
+- f Finger-V calibration (AR branch)
+- r Reset plane tracking (AR branch)
+
+
+---
+
+## File Structure
+- main.py
+- nodes.py
+- effects.py
+- hand_tracking.py
+- ui.py
+- note.wav
+- note1.wav
+- note2.wav
+- note3.wav
+- README.md
+
+
+---
+
+## Experimental AR Systems (chaos-lab-AR branch)
+
+These features are prototypes and not part of the stable main branch.
+
+### Plane Calibration
+
+- Mouse-V: click 4 corners of a physical plane
+- Finger-V: hold your fingertip steady to lock corners
+
+### Plane Tracking
+
+- Optical flow tracks corner movement
+- Homography updates every frame
+- Plane disables itself if tracking confidence is too low
+
+### AR Projection
+
+- Grid overlay projected onto the calibrated plane
+- Nodes can be mapped into plane coordinates
+
+---
+
+## Project Status
+
+- Main branch: stable
+- chaos-lab-AR branch: experimental and unstable
+- Further features may be added depending on available sanity and free time
+
+---
+
+## Lessons Learned
+
+- Hand tracking is fun when the camera behaves
+- OpenCV is not a UI framework but we used it anyway
+- AR math does not care about your feelings
+- Pygame somehow always survives
+
+
+
