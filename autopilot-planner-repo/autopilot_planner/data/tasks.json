@@ -1,0 +1,36 @@
+{
+    "tasks": [
+        {
+            "title": "study python",
+            "duration": 3
+        },
+        {
+            "title": "gym",
+            "duration": 1
+        },
+        {
+            "title": "hackathon stuff",
+            "duration": 3
+        },
+        {
+            "title": "work",
+            "duration": 2
+        },
+        {
+            "title": "work",
+            "duration": 2
+        },
+        {
+            "title": "work",
+            "duration": 2
+        },
+        {
+            "title": "wa",
+            "duration": 2
+        },
+        {
+            "title": "wa",
+            "duration": 2
+        }
+    ]
+}

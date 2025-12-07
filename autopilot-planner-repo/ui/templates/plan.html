@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autopilot Planner - Today's Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold">Autopilot Planner</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="/add" class="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Add Task</a>
+                    <a href="/plan" class="bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">View Plan</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">Today's Plan</h1>
+            <p class="text-lg text-gray-600 mt-2">Your scheduled tasks for the day</p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Schedule Section -->
+            <div class="flex-1">
+                <h2 class="text-2xl font-bold mb-4">Your Schedule</h2>
+                <div id="plan-container" class="grid gap-4 md:grid-cols-2">
+                    <!-- Plan items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- AI Chat Assistant Panel -->
+            <div class="w-full lg:w-96">
+                <div class="bg-white shadow-lg rounded-lg p-6 sticky top-4">
+                    <h2 class="text-xl font-bold mb-4 text-gray-900">AI Assistant</h2>
+
+                    <!-- Chat Output -->
+                    <div id="chat-output" class="bg-gray-50 rounded-lg p-4 mb-4 h-64 overflow-y-auto text-sm text-gray-700">
+                        <p class="text-gray-500 italic">Ask me anything about your tasks and productivity!</p>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="space-y-3">
+                        <textarea id="chat-input" placeholder="Type your message here..."
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                  rows="3"></textarea>
+                        <button id="send-chat-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200">
+                            Ask AI
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="mt-12">
+            <h2 class="text-2xl font-bold mb-4">Calendar</h2>
+            <div id="calendar" class="bg-white shadow-lg rounded-lg p-4 h-96">
+                <!-- Calendar will be initialized here -->
+                <p class="text-gray-500 text-center">Calendar integration coming soon...</p>
+            </div>
+        </div>
+    </main>
+    <script src="/static/js/plan.js"></script>
+</body>
+</html>
