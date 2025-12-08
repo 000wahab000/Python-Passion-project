@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_cors import CORS
-from autopilot_planner.server.api import api
+from server.api import api
 
 app = Flask(__name__, static_folder='static')
 CORS(app)  # Enable CORS for all routes
@@ -19,6 +19,10 @@ def add():
 @app.route("/plan")
 def plan():
     return render_template("plan.html")
+
+@app.route("/calendar")
+def calendar():
+    return render_template("calendar.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

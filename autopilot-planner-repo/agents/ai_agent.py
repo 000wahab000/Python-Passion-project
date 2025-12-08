@@ -1,5 +1,5 @@
 import requests
-from autopilot_planner.config import COMPETITION_API_KEY
+from config import COMPETITION_API_KEY
 
 def ai_generate_task_suggestions(tasks):
     """
@@ -106,3 +106,55 @@ Provide a helpful, concise response related to their tasks and productivity. Kee
     except Exception as e:
         print(f"AI chat error: {e}")
         return "I'm sorry, there was an error processing your request. Please try again later."
+
+def ai_prioritize_tasks(tasks):
+    """
+    Given a list of tasks, call Cohere AI to prioritize them.
+    Return a list of prioritized task objects with priority scores.
+    """
+    if not COMPETITION_API_KEY or COMPETITION_API_KEY == "your-cohere-api-key-here":
+        # Fallback: sort by duration descending
+        prioritized = sorted(tasks, key=lambda x: x['duration'], reverse=True)
+        for i, task in enumerate(prioritized):
+            task['priority'] = i + 1
+        return prioritized
+
+    # Prepare prompt
+    tasks_str = "\n".join([f"- {task['title']} ({task['duration']} hours)" for task in tasks])
+    prompt = f"""Given the following tasks:
+{tasks_str}
+
+Prioritize these tasks based on urgency, importance, and duration. Assign a priority number (1 being highest) to each task. Provide the prioritized list with priority scores.
+
+Format as JSON array of objects with "title", "duration", and "priority" fields."""
+
+    try:
+        response = requests.post(
+            "https://api.cohere.ai/generate",
+            headers={
+                "Authorization": f"Bearer {COMPETITION_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "command-r-plus",
+                "prompt": prompt,
+                "max_tokens": 300,
+                "temperature": 0.3
+            }
+        )
+        response.raise_for_status()
+        result = response.json()
+        generated_text = result.get("generations", [{}])[0].get("text", "")
+
+        # Parse JSON
+        start = generated_text.find('[')
+        end = generated_text.rfind(']') + 1
+        if start != -1 and end > start:
+            json_str = generated_text[start:end]
+            prioritized = json.loads(json_str)
+            return prioritized
+        else:
+            return tasks  # fallback
+    except Exception as e:
+        print(f"AI prioritize error: {e}")
+        return tasks

@@ -1,0 +1,60 @@
+{
+<<<<<<< HEAD
+  "projectLimitations": {
+    "scope": "autopilot-planner Git repository only",
+    "restrictedFolders": ["Python-Passion-project", "autopilot-planner-docs"],
+    "safetyRules": [
+      "Never access or modify files outside the autopilot-planner repo",
+      "Treat autopilot-planner-docs as read-only documentation",
+      "Protect Python-Passion-project from any operations",
+      "Limit all git operations to autopilot-planner repository"
+    ]
+=======
+  "projectName": "autopilot-planner",
+  "description": "AI-assisted task planning app with Flask, modular backend, and agent integrations.",
+  
+  "root": "./",
+  "workspaceProtection": {
+    "allowedPaths": [
+      "./autopilot_planner",
+      "./requirements.txt",
+      "./README.md",
+      "./.gitignore",
+      "./autopilot-planner-docs"
+    ],
+    "blockedPaths": [
+      "../Python-Passion-project",
+      "../Python-passion-project",
+      "../python-passion-project",
+      "../Python-passion",
+      "../python-passion",
+      "../*"
+    ],
+    "readOnlyPaths": [
+      "./autopilot-planner-docs"
+    ]
+  },
+
+  "rules": {
+    "neverModifyOutsideRoot": true,
+    "neverDeleteFiles": true,
+    "neverRenameRootDirectories": true,
+    "neverCreateNewRepos": true,
+    "neverTouchBlockedPaths": true
+  },
+
+  "execution": {
+    "requireConfirmation": true,
+    "safeMode": true
+  },
+
+  "tasks": {
+    "primaryEntryPoints": [
+      "./autopilot_planner/ui/app.py",
+      "./autopilot_planner/server/api.py",
+      "./autopilot_planner/agents/ai_agent.py"
+    ],
+    "documentation": "./autopilot-planner-docs"
+>>>>>>> 65932b887ddba66c97d9054298ec66cd39b1d9a5
+  }
+}

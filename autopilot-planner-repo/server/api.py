@@ -45,7 +45,7 @@ def delete_task(index):
 
 @api.route('/plan', methods=['GET'])
 def get_plan():
-    from autopilot_planner.agents.planner import generate_plan
+    from agents.planner import generate_plan
     plan = generate_plan()
     return jsonify({"plan": plan})
 
@@ -53,7 +53,7 @@ def get_plan():
 def ai_suggestions():
     req_data = request.get_json()
     tasks = req_data.get('tasks', [])
-    from autopilot_planner.agents.ai_agent import ai_generate_task_suggestions
+    from agents.ai_agent import ai_generate_task_suggestions
     suggestions = ai_generate_task_suggestions(tasks)
     return jsonify({"suggestions": suggestions})
 
@@ -62,6 +62,27 @@ def ai_chat():
     req_data = request.get_json()
     message = req_data.get('message', '')
     tasks = req_data.get('tasks', [])
-    from autopilot_planner.agents.ai_agent import ai_chat
+    from agents.ai_agent import ai_chat
     reply = ai_chat(message, tasks)
     return jsonify({"reply": reply})
+
+@api.route('/calendar/events', methods=['GET'])
+def get_calendar_events():
+    # Placeholder for calendar events
+    # In future, generate from tasks with dates
+    events = [
+        {
+            "title": "Sample Task",
+            "start": "2025-12-08T10:00:00",
+            "end": "2025-12-08T11:00:00"
+        }
+    ]
+    return jsonify(events)
+
+@api.route('/ai/prioritize', methods=['POST'])
+def ai_prioritize():
+    req_data = request.get_json()
+    tasks = req_data.get('tasks', [])
+    from agents.ai_agent import ai_prioritize_tasks
+    prioritized = ai_prioritize_tasks(tasks)
+    return jsonify({"prioritized": prioritized})
