@@ -38,7 +38,7 @@ def add_task():
         return jsonify({"error": "Invalid task"}), 400
 
     data = read_tasks()
-    data["tasks"].append({"text": task, "status": "todo"})
+    data["tasks"].append({"text": task, "status": "todo", "category": "general"})
     write_tasks(data)
     return jsonify({"status": "ok"})
 
@@ -78,6 +78,20 @@ def update_status(index):
         return jsonify({"error": "Invalid status"}), 400
 
     data["tasks"][index]["status"] = new_status
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@app.route("/api/tasks/<int:index>/category", methods=["PATCH"])
+def update_category(index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+
+    new_category = request.json.get("category", "").strip()
+    if not new_category:
+        return jsonify({"error": "Invalid category"}), 400
+
+    data["tasks"][index]["category"] = new_category
     write_tasks(data)
     return jsonify({"tasks": data["tasks"]})
 

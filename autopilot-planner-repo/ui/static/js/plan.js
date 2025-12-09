@@ -11,11 +11,17 @@ function renderPlan(plan) {
     const li = document.createElement('li');
     li.className = 'task-card bg-white p-4 shadow rounded mb-4';
     li.innerHTML = `
-      <h3 class="text-lg font-semibold"><span class="task-text">${item.text}</span></h3>
+      <h3 class="text-lg font-semibold"><span class="task-text">${item.text}</span> <span class="category-pill">${item.category}</span></h3>
       <select onchange="changeStatus(${idx}, this.value)">
         <option value="todo" ${item.status === "todo" ? "selected" : ""}>Todo</option>
         <option value="in-progress" ${item.status === "in-progress" ? "selected" : ""}>In Progress</option>
         <option value="done" ${item.status === "done" ? "selected" : ""}>Done</option>
+      </select>
+      <select onchange="changeCategory(${idx}, this.value)">
+        <option value="general" ${item.category === "general" ? "selected" : ""}>General</option>
+        <option value="work" ${item.category === "work" ? "selected" : ""}>Work</option>
+        <option value="college" ${item.category === "college" ? "selected" : ""}>College</option>
+        <option value="personal" ${item.category === "personal" ? "selected" : ""}>Personal</option>
       </select>
       <p><strong>Start:</strong> ${item.start} &nbsp; <strong>End:</strong> ${item.end}</p>
       <button onclick="editTask(${idx})">Edit</button>
@@ -69,6 +75,15 @@ async function changeStatus(index, newStatus) {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus })
+    });
+    loadPlan();
+}
+
+async function changeCategory(index, newCategory) {
+    await fetch(`/api/tasks/${index}/category`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category: newCategory })
     });
     loadPlan();
 }
