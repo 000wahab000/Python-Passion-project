@@ -16,40 +16,78 @@ def save_tasks(tasks):
     with open(DATA_PATH, "w") as f:
         json.dump({"tasks": tasks}, f, indent=4)
 
-@api.route('/tasks', methods=['GET'])
-def get_tasks():
-    tasks = load_tasks()
-    return jsonify({"tasks": tasks})
+def read_tasks():
+    with open(DATA_PATH, "r") as f:
+        data = json.load(f)
+    return data
 
-@api.route('/tasks', methods=['POST'])
+def write_tasks(data):
+    with open(DATA_PATH, "w") as f:
+        json.dump(data, f, indent=4)
+
+@api.route('/api/tasks', methods=['GET'])
+def get_tasks():
+    data = read_tasks()
+    return jsonify(data)
+
+@api.route('/api/tasks', methods=['POST'])
 def add_task():
     req_data = request.get_json()
-    title = req_data.get('title')
-    duration = req_data.get('duration')
-    if not title or not isinstance(duration, (int, float)):
-        return jsonify({"error": "Invalid title or duration"}), 400
+    task = req_data.get('title')
+    if not task:
+        return jsonify({"error": "Invalid task"}), 400
 
-    tasks = load_tasks()
-    tasks.append({"title": title, "duration": duration})
-    save_tasks(tasks)
+    data = read_tasks()
+    data["tasks"].append({"text": task, "status": "todo"})
+    write_tasks(data)
     return jsonify({"status": "ok"})
 
-@api.route('/tasks/<int:index>', methods=['DELETE'])
+@api.route('/api/tasks/<int:index>', methods=['DELETE'])
 def delete_task(index):
-    tasks = load_tasks()
-    if 0 <= index < len(tasks):
-        tasks.pop(index)
-        save_tasks(tasks)
-        return jsonify({"status": "deleted"})
-    return jsonify({"error": "Invalid index"}), 400
+    data = read_tasks()
+    tasks = data.get('tasks', [])
+    if index < 0 or index >= len(tasks):
+        return jsonify({'error': 'index out of range'}), 400
+    tasks.pop(index)
+    data['tasks'] = tasks
+    write_tasks(data)
+    return jsonify({'status':'deleted'})
 
-@api.route('/plan', methods=['GET'])
+@api.route('/api/tasks/<int:index>', methods=['PATCH'])
+def update_task(index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+
+    new_text = request.json.get("text", "").strip()
+    if not new_text:
+        return jsonify({"error": "No task content"}), 400
+
+    data["tasks"][index]["text"] = new_text
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@api.route("/api/tasks/<int:index>/status", methods=["PATCH"])
+def update_status(index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+
+    new_status = request.json.get("status", "").strip()
+    if new_status not in ["todo", "in-progress", "done"]:
+        return jsonify({"error": "Invalid status"}), 400
+
+    data["tasks"][index]["status"] = new_status
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@api.route('/api/plan', methods=['GET'])
 def get_plan():
     from agents.planner import generate_plan
     plan = generate_plan()
     return jsonify({"plan": plan})
 
-@api.route('/ai/suggestions', methods=['POST'])
+@api.route('/api/ai/suggestions', methods=['POST'])
 def ai_suggestions():
     req_data = request.get_json()
     tasks = req_data.get('tasks', [])
@@ -57,7 +95,7 @@ def ai_suggestions():
     suggestions = ai_generate_task_suggestions(tasks)
     return jsonify({"suggestions": suggestions})
 
-@api.route('/ai/chat', methods=['POST'])
+@api.route('/api/ai/chat', methods=['POST'])
 def ai_chat():
     req_data = request.get_json()
     message = req_data.get('message', '')
@@ -66,7 +104,7 @@ def ai_chat():
     reply = ai_chat(message, tasks)
     return jsonify({"reply": reply})
 
-@api.route('/calendar/events', methods=['GET'])
+@api.route('/api/calendar/events', methods=['GET'])
 def get_calendar_events():
     # Placeholder for calendar events
     # In future, generate from tasks with dates
@@ -79,7 +117,7 @@ def get_calendar_events():
     ]
     return jsonify(events)
 
-@api.route('/ai/prioritize', methods=['POST'])
+@api.route('/api/ai/prioritize', methods=['POST'])
 def ai_prioritize():
     req_data = request.get_json()
     tasks = req_data.get('tasks', [])

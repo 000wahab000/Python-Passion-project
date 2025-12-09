@@ -1,15 +1,4 @@
 {
-<<<<<<< HEAD
-  "projectLimitations": {
-    "scope": "autopilot-planner Git repository only",
-    "restrictedFolders": ["Python-Passion-project", "autopilot-planner-docs"],
-    "safetyRules": [
-      "Never access or modify files outside the autopilot-planner repo",
-      "Treat autopilot-planner-docs as read-only documentation",
-      "Protect Python-Passion-project from any operations",
-      "Limit all git operations to autopilot-planner repository"
-    ]
-=======
   "projectName": "autopilot-planner",
   "description": "AI-assisted task planning app with Flask, modular backend, and agent integrations.",
   
@@ -55,6 +44,5 @@
       "./autopilot_planner/agents/ai_agent.py"
     ],
     "documentation": "./autopilot-planner-docs"
->>>>>>> 65932b887ddba66c97d9054298ec66cd39b1d9a5
   }
 }
