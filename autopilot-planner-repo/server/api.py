@@ -43,7 +43,8 @@ def add_task():
         "text": task,
         "status": "todo",
         "category": "general",
-        "due": None
+        "due": None,
+        "subtasks": []
     })
     write_tasks(data)
     return jsonify({"status": "ok"})
@@ -113,6 +114,49 @@ def update_due(index):
         return jsonify({"error": "Invalid date"}), 400
 
     data["tasks"][index]["due"] = new_due
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@app.route("/api/tasks/<int:index>/subtasks/add", methods=["PATCH"])
+def add_subtask(index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+
+    subtext = request.json.get("text", "").strip()
+    if not subtext:
+        return jsonify({"error": "Empty subtask"}), 400
+
+    data["tasks"][index]["subtasks"].append({
+        "text": subtext,
+        "done": False
+    })
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@app.route("/api/tasks/<int:index>/subtasks/<int:sub_index>/toggle", methods=["PATCH"])
+def toggle_subtask(index, sub_index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+    subtasks = data["tasks"][index]["subtasks"]
+    if sub_index < 0 or sub_index >= len(subtasks):
+        return jsonify({"error": "Invalid subtask index"}), 400
+
+    subtasks[sub_index]["done"] = not subtasks[sub_index]["done"]
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@app.route("/api/tasks/<int:index>/subtasks/<int:sub_index>", methods=["DELETE"])
+def delete_subtask(index, sub_index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+    subtasks = data["tasks"][index]["subtasks"]
+    if sub_index < 0 or sub_index >= len(subtasks):
+        return jsonify({"error": "Invalid subtask index"}), 400
+
+    subtasks.pop(sub_index)
     write_tasks(data)
     return jsonify({"tasks": data["tasks"]})
 

@@ -25,6 +25,17 @@ function renderPlan(plan) {
       </select>
       <p><strong>Start:</strong> ${item.start} &nbsp; <strong>End:</strong> ${item.end}</p>
       <input type="date" value="${item.due || ''}" onchange="changeDue(${idx}, this.value)">
+      <ul class="subtask-list">
+        ${item.subtasks.map((s, i) => `
+          <li>
+             <input type="checkbox" ${s.done ? "checked" : ""} onchange="toggleSubtask(${idx}, ${i})">
+             <span class="${s.done ? 'sub-done' : ''}">${s.text}</span>
+             <button onclick="deleteSubtask(${idx}, ${i})">X</button>
+          </li>
+        `).join("")}
+      </ul>
+      <input type="text" id="subtask-input-${idx}" placeholder="Add subtask...">
+      <button onclick="addSubtask(${idx})">Add</button>
       <button onclick="editTask(${idx})">Edit</button>
       <button class="delete-btn bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded mt-2" data-idx="${idx}">
         Delete
@@ -94,6 +105,35 @@ async function changeDue(index, newDate) {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ due: newDate || null })
+    });
+    loadPlan();
+}
+
+async function addSubtask(index) {
+    const input = document.querySelector(`#subtask-input-${index}`);
+    const value = input.value.trim();
+    if (!value) return;
+
+    await fetch(`/api/tasks/${index}/subtasks/add`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: value })
+    });
+
+    input.value = "";
+    loadPlan();
+}
+
+async function toggleSubtask(index, subIndex) {
+    await fetch(`/api/tasks/${index}/subtasks/${subIndex}/toggle`, {
+        method: "PATCH"
+    });
+    loadPlan();
+}
+
+async function deleteSubtask(index, subIndex) {
+    await fetch(`/api/tasks/${index}/subtasks/${subIndex}`, {
+        method: "DELETE"
     });
     loadPlan();
 }
