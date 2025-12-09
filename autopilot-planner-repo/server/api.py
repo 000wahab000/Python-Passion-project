@@ -28,6 +28,7 @@ def write_tasks(data):
 @api.route('/api/tasks', methods=['GET'])
 def get_tasks():
     data = read_tasks()
+    data["tasks"].sort(key=lambda x: x["due"] or "9999-12-31")
     return jsonify(data)
 
 @api.route('/api/tasks', methods=['POST'])
@@ -38,7 +39,12 @@ def add_task():
         return jsonify({"error": "Invalid task"}), 400
 
     data = read_tasks()
-    data["tasks"].append({"text": task, "status": "todo", "category": "general"})
+    data["tasks"].append({
+        "text": task,
+        "status": "todo",
+        "category": "general",
+        "due": None
+    })
     write_tasks(data)
     return jsonify({"status": "ok"})
 
@@ -92,6 +98,21 @@ def update_category(index):
         return jsonify({"error": "Invalid category"}), 400
 
     data["tasks"][index]["category"] = new_category
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@app.route("/api/tasks/<int:index>/due", methods=["PATCH"])
+def update_due(index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+
+    new_due = request.json.get("due", None)
+    # Accept empty or ISO-format date string
+    if new_due is not None and not isinstance(new_due, str):
+        return jsonify({"error": "Invalid date"}), 400
+
+    data["tasks"][index]["due"] = new_due
     write_tasks(data)
     return jsonify({"tasks": data["tasks"]})
 

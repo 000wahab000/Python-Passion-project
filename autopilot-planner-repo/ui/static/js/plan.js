@@ -24,6 +24,7 @@ function renderPlan(plan) {
         <option value="personal" ${item.category === "personal" ? "selected" : ""}>Personal</option>
       </select>
       <p><strong>Start:</strong> ${item.start} &nbsp; <strong>End:</strong> ${item.end}</p>
+      <input type="date" value="${item.due || ''}" onchange="changeDue(${idx}, this.value)">
       <button onclick="editTask(${idx})">Edit</button>
       <button class="delete-btn bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded mt-2" data-idx="${idx}">
         Delete
@@ -84,6 +85,15 @@ async function changeCategory(index, newCategory) {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category: newCategory })
+    });
+    loadPlan();
+}
+
+async function changeDue(index, newDate) {
+    await fetch(`/api/tasks/${index}/due`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ due: newDate || null })
     });
     loadPlan();
 }
