@@ -44,6 +44,8 @@ def add_task():
         "status": "todo",
         "category": "general",
         "due": None,
+        "start": "09:00",
+        "end": "10:00",
         "subtasks": []
     })
     write_tasks(data)
@@ -88,7 +90,7 @@ def update_status(index):
     write_tasks(data)
     return jsonify({"tasks": data["tasks"]})
 
-@app.route("/api/tasks/<int:index>/category", methods=["PATCH"])
+@api.route("/api/tasks/<int:index>/category", methods=["PATCH"])
 def update_category(index):
     data = read_tasks()
     if index < 0 or index >= len(data["tasks"]):
@@ -102,7 +104,7 @@ def update_category(index):
     write_tasks(data)
     return jsonify({"tasks": data["tasks"]})
 
-@app.route("/api/tasks/<int:index>/due", methods=["PATCH"])
+@api.route("/api/tasks/<int:index>/due", methods=["PATCH"])
 def update_due(index):
     data = read_tasks()
     if index < 0 or index >= len(data["tasks"]):
@@ -117,7 +119,35 @@ def update_due(index):
     write_tasks(data)
     return jsonify({"tasks": data["tasks"]})
 
-@app.route("/api/tasks/<int:index>/subtasks/add", methods=["PATCH"])
+@api.route("/api/tasks/<int:index>/start", methods=["PATCH"])
+def update_start(index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+
+    new_start = request.json.get("start", "").strip()
+    if not new_start:
+        return jsonify({"error": "Invalid start time"}), 400
+
+    data["tasks"][index]["start"] = new_start
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@api.route("/api/tasks/<int:index>/end", methods=["PATCH"])
+def update_end(index):
+    data = read_tasks()
+    if index < 0 or index >= len(data["tasks"]):
+        return jsonify({"error": "Index out of range"}), 400
+
+    new_end = request.json.get("end", "").strip()
+    if not new_end:
+        return jsonify({"error": "Invalid end time"}), 400
+
+    data["tasks"][index]["end"] = new_end
+    write_tasks(data)
+    return jsonify({"tasks": data["tasks"]})
+
+@api.route("/api/tasks/<int:index>/subtasks/add", methods=["PATCH"])
 def add_subtask(index):
     data = read_tasks()
     if index < 0 or index >= len(data["tasks"]):
@@ -134,7 +164,7 @@ def add_subtask(index):
     write_tasks(data)
     return jsonify({"tasks": data["tasks"]})
 
-@app.route("/api/tasks/<int:index>/subtasks/<int:sub_index>/toggle", methods=["PATCH"])
+@api.route("/api/tasks/<int:index>/subtasks/<int:sub_index>/toggle", methods=["PATCH"])
 def toggle_subtask(index, sub_index):
     data = read_tasks()
     if index < 0 or index >= len(data["tasks"]):
@@ -147,7 +177,7 @@ def toggle_subtask(index, sub_index):
     write_tasks(data)
     return jsonify({"tasks": data["tasks"]})
 
-@app.route("/api/tasks/<int:index>/subtasks/<int:sub_index>", methods=["DELETE"])
+@api.route("/api/tasks/<int:index>/subtasks/<int:sub_index>", methods=["DELETE"])
 def delete_subtask(index, sub_index):
     data = read_tasks()
     if index < 0 or index >= len(data["tasks"]):
@@ -162,6 +192,9 @@ def delete_subtask(index, sub_index):
 
 @api.route('/api/plan', methods=['GET'])
 def get_plan():
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
     from agents.planner import generate_plan
     plan = generate_plan()
     return jsonify({"plan": plan})
@@ -170,6 +203,9 @@ def get_plan():
 def ai_suggestions():
     req_data = request.get_json()
     tasks = req_data.get('tasks', [])
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
     from agents.ai_agent import ai_generate_task_suggestions
     suggestions = ai_generate_task_suggestions(tasks)
     return jsonify({"suggestions": suggestions})
@@ -179,6 +215,9 @@ def ai_chat():
     req_data = request.get_json()
     message = req_data.get('message', '')
     tasks = req_data.get('tasks', [])
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
     from agents.ai_agent import ai_chat
     reply = ai_chat(message, tasks)
     return jsonify({"reply": reply})
@@ -200,6 +239,9 @@ def get_calendar_events():
 def ai_prioritize():
     req_data = request.get_json()
     tasks = req_data.get('tasks', [])
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
     from agents.ai_agent import ai_prioritize_tasks
     prioritized = ai_prioritize_tasks(tasks)
     return jsonify({"prioritized": prioritized})
